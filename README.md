@@ -51,11 +51,11 @@ idict welcome -d 1
 ## Compile on your own
 - Linux
     ```
-    g++ -Os -s -m64 -std=c++14 idict_linux.cpp -o wd -Wl,-static -lssl -lcrypto -Wl,-Bdynamic -ldl
+    g++ -Os -s -m64 -std=c++14 idict_linux.cpp -o idict -Wl,-static -lssl -lcrypto -Wl,-Bdynamic -ldl
     ```
     if you have the error of `undefined reference to 'pthread_getspecific'`, you might need to add `-pthread`
     ```
-    g++ -Os -s -m64 -std=c++14 idict_linux.cpp -o wd -Wl,-static -lssl -lcrypto -Wl,-Bdynamic -ldl -pthread
+    g++ -Os -s -m64 -std=c++14 idict_linux.cpp -o idict -Wl,-static -lssl -lcrypto -Wl,-Bdynamic -ldl -pthread
     ```
 - Windows
     ```
