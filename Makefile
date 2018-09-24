@@ -3,3 +3,6 @@ win: idict_win.cpp
 
 linux: idict_linux.cpp
 	g++ -Os -s -m64 -std=c++14 idict_linux.cpp -o idict -Wl,-Bstatic -lssl -lcrypto -Wl,-Bdynamic -ldl
+	
+macOs: idict_linux.cpp
+	g++ -Os -m64 -std=c++14 idict_linux.cpp -o idict -lssl -lcrypto
