@@ -9,8 +9,16 @@ using json = nlohmann::json;
 using std::string;
 std::map<string, string> sourceMap = { {"CAMBRIDGE", "剑桥高阶英汉双解词典"}, {"LONGMAN", "朗文当代高级英语词典"}, {"COLLINS", "柯林斯英汉双解大词典"}, {"ONLINE", "金山词霸"} };
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
+short backgroundColor;
 int maxSentence = 2;
+
+bool GetColor(short &ret) {
+	CONSOLE_SCREEN_BUFFER_INFO info;
+	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info))
+		return false;
+	ret = info.wAttributes;
+	return true;
+}
 string httpsRuest(const char *host, const char *message)
 {
 	char const *portno = "443";
@@ -60,32 +68,32 @@ void parseBrief(json brief)
 {
 	if (brief["lemma"].find("relation") != brief["lemma"].end())
 	{
-		SetConsoleTextAttribute(hConsole, 12 | 0);
+		SetConsoleTextAttribute(hConsole, 12 | backgroundColor);
 		printf("%s: ", brief["wordOut"].get<string>().c_str());
-		SetConsoleTextAttribute(hConsole, 15 | 0);
+		SetConsoleTextAttribute(hConsole, 15 | backgroundColor);
 		printf("%s 的 %s\n", brief["lemma"]["lemma"].get<string>().c_str(), brief["lemma"]["relation"].get<string>().c_str());
 	}
 	else
 	{
-		SetConsoleTextAttribute(hConsole, 12 | 0);
+		SetConsoleTextAttribute(hConsole, 12 | backgroundColor);
 		printf("%s:\n", brief["wordOut"].get<string>().c_str());
 	}
 	if (brief.find("usPron") != brief.end() || brief.find("ukPron") != brief.end())
 	{
-		// SetConsoleTextAttribute(hConsole, 10 | 0);
+		// SetConsoleTextAttribute(hConsole, 10 | backgroundColor);
 		// printf("  音标\n");
 		if (brief.find("usPron") != brief.end())
 		{
-			SetConsoleTextAttribute(hConsole, 14 | 0);
+			SetConsoleTextAttribute(hConsole, 14 | backgroundColor);
 			printf("    美音 ");
-			SetConsoleTextAttribute(hConsole, 15 | 0);
+			SetConsoleTextAttribute(hConsole, 15 | backgroundColor);
 			printf("/%-2s/", brief["usPron"]["ps"].get<string>().c_str());
 		}
 		if (brief.find("ukPron") != brief.end())
 		{
-			SetConsoleTextAttribute(hConsole, 14 | 0);
+			SetConsoleTextAttribute(hConsole, 14 | backgroundColor);
 			printf("    英音 ");
-			SetConsoleTextAttribute(hConsole, 15 | 0);
+			SetConsoleTextAttribute(hConsole, 15 | backgroundColor);
 			printf("/%-2s/", brief["ukPron"]["ps"].get<string>().c_str());
 		}
 		printf("\n");
@@ -93,20 +101,20 @@ void parseBrief(json brief)
 	if (brief.find("chnDefinitions") != brief.end())
 	{
 		auto chn = brief["chnDefinitions"];
-		SetConsoleTextAttribute(hConsole, 10 | 0);
+		SetConsoleTextAttribute(hConsole, 10 | backgroundColor);
 		printf("中文释义\n");
 		for (auto &def : chn)
 		{
 			if (def.find("pos") != def.end())
 			{
-				SetConsoleTextAttribute(hConsole, 14 | 0);
+				SetConsoleTextAttribute(hConsole, 14 | backgroundColor);
 				printf("    %-8s", def["pos"].get<string>().c_str());
-				SetConsoleTextAttribute(hConsole, 15 | 0);
+				SetConsoleTextAttribute(hConsole, 15 | backgroundColor);
 				printf("%s\n", def["meaning"].get<string>().c_str());
 			}
 			else
 			{
-				SetConsoleTextAttribute(hConsole, 15 | 0);
+				SetConsoleTextAttribute(hConsole, 15 | backgroundColor);
 				printf("            %s\n", def["meaning"].get<string>().c_str());
 			}
 		}
@@ -114,20 +122,20 @@ void parseBrief(json brief)
 	if (brief.find("engDefinitions") != brief.end())
 	{
 		auto chn = brief["engDefinitions"];
-		SetConsoleTextAttribute(hConsole, 10 | 0);
+		SetConsoleTextAttribute(hConsole, 10 | backgroundColor);
 		printf("英文释义\n");
 		for (auto &def : chn)
 		{
 			if (def.find("pos") != def.end())
 			{
-				SetConsoleTextAttribute(hConsole, 14 | 0);
+				SetConsoleTextAttribute(hConsole, 14 | backgroundColor);
 				printf("    %-8s", def["pos"].get<string>().c_str());
-				SetConsoleTextAttribute(hConsole, 15 | 0);
+				SetConsoleTextAttribute(hConsole, 15 | backgroundColor);
 				printf("%s\n", def["meaning"].get<string>().c_str());
 			}
 			else
 			{
-				SetConsoleTextAttribute(hConsole, 15 | 0);
+				SetConsoleTextAttribute(hConsole, 15 | backgroundColor);
 				printf("            %s\n", def["meaning"].get<string>().c_str());
 			}
 		}
@@ -146,13 +154,13 @@ void parseDetail(json detail)
 	if (detail.find("sentenceLists") != detail.end())
 	{
 		auto sentenceLists = detail["sentenceLists"];
-		SetConsoleTextAttribute(hConsole, 10 | 0);
+		SetConsoleTextAttribute(hConsole, 10 | backgroundColor);
 		printf("双语例句\n");
 		for (auto &sentenceList : sentenceLists)
 		{
-			SetConsoleTextAttribute(hConsole, 14 | 0);
+			SetConsoleTextAttribute(hConsole, 14 | backgroundColor);
 			printf("    %s\n", parseSource(sentenceList).c_str());
-			SetConsoleTextAttribute(hConsole, 15 | 0);
+			SetConsoleTextAttribute(hConsole, 15 | backgroundColor);
 			int count = 0;
 			for (auto &sentence : sentenceList["sentences"])
 			{
@@ -175,7 +183,8 @@ int main(int argc, char *argv[])
 		SetConsoleCP(65001);
 		SetConsoleOutputCP(65001);
 	}
-	system("color 08");
+	GetColor(backgroundColor);
+	backgroundColor &= 240;
 	char const *host = "www.ireading.site";
 	char const *message_fmt = "GET /word/detail/?json=true&tag=false&word=%s HTTP/1.0\r\n\r\n";
 	char message[1024];
@@ -223,7 +232,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	catch (std::out_of_range) {
-		SetConsoleTextAttribute(hConsole, 15 | 0);
+		SetConsoleTextAttribute(hConsole, 15 | backgroundColor);
 		printf("该单词不存在");
 	}
 
