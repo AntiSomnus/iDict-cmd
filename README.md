@@ -21,7 +21,7 @@ command line version of iDict for Windows and Linux
 
         Or you can just go to [Release](https://github.com/AntiSomnus/iDict-cmd/releases/latest) page to download the latest version.
 
-    2. `sudo ln -s /usr/bin/idict /Location/to/idict`
+    2. `sudo ln -s /Location/to/idict /usr/bin/idict `
     3. `idict welcome` `idict welcome -d` `idict welcome -d 3`
 
 - Windows
