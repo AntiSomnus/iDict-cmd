@@ -3,7 +3,7 @@
 
 command line version of iDict for macOs&Windows&Linux
 
-适用macOs,Windows和Linux的命令行版本iDict英语词典,包含330W词库以及来自权威词典的双语例句。
+适用macOs,Windows(64位)和Linux的命令行版本iDict英语词典,包含330W词库以及来自权威词典的双语例句。
 
 轻量级,包含所有依赖的可执行文件,下载即用。
 
@@ -33,6 +33,8 @@ command line version of iDict for macOs&Windows&Linux
     3. `idict welcome` `idict welcome -d` `idict welcome -d 3`
 
 - macOs
+
+    macOs上使用需要brew安装openssl
 
     1. `wget https://github.com/AntiSomnus/iDict-cmd/releases/download/[latest-release-number]/idict_macos && chmod a+x idict_macos`
 
@@ -78,7 +80,7 @@ idict welcome -d 1
     ```
 - Windows
     ```
-	g++ -Os -s -m64 -std=c++14 idict_win.cpp   -o idict -Wl,-Bstatic -lssl -lcrypto -Wl,-Bdynamic -lws2_32
+	g++ idict_win.cpp -o idict -Os -s -m64 -std=c++14 -static-libgcc -static-libstdc++ -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive -Wl,-Bstatic -lssl -lcrypto -Wl,-Bdynamic -lws2_32
     ```
 - macOs
     In order to use it properly, you must install openssl from brew first.

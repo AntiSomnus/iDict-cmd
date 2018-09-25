@@ -7,12 +7,13 @@
 #define DEFAULT_BUFLEN 16384
 using json = nlohmann::json;
 using std::string;
-std::map<string, string> sourceMap = { {"CAMBRIDGE", "剑桥高阶英汉双解词典"}, {"LONGMAN", "朗文当代高级英语词典"}, {"COLLINS", "柯林斯英汉双解大词典"}, {"ONLINE", "金山词霸"} };
+std::map<string, string> sourceMap = {{"CAMBRIDGE", "剑桥高阶英汉双解词典"}, {"LONGMAN", "朗文当代高级英语词典"}, {"COLLINS", "柯林斯英汉双解大词典"}, {"ONLINE", "金山词霸"}};
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-short backgroundColor;
+short backgroundColor, foregroundColor;
 int maxSentence = 2;
 
-bool GetColor(short &ret) {
+bool GetColor(short &ret)
+{
 	CONSOLE_SCREEN_BUFFER_INFO info;
 	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info))
 		return false;
@@ -46,9 +47,9 @@ string httpsRuest(const char *host, const char *message)
 	SSL_connect(conn);
 
 	int recvbuflen = DEFAULT_BUFLEN;
-	char recvbuf[DEFAULT_BUFLEN] = { '0' };
+	char recvbuf[DEFAULT_BUFLEN] = {'0'};
 	SSL_write(conn, message, (int)strlen(message));
-	string response{ "" };
+	string response{""};
 	int iResult;
 	do
 	{
@@ -184,6 +185,7 @@ int main(int argc, char *argv[])
 		SetConsoleOutputCP(65001);
 	}
 	GetColor(backgroundColor);
+	foregroundColor = backgroundColor & 15;
 	backgroundColor &= 240;
 	char const *host = "www.ireading.site";
 	char const *message_fmt = "GET /word/detail/?json=true&tag=false&word=%s HTTP/1.0\r\n\r\n";
@@ -195,7 +197,7 @@ int main(int argc, char *argv[])
 		puts("Parameter: <word>");
 		exit(0);
 	}
-	string cat_input{ "" };
+	string cat_input{""};
 	bool isPreviousDetail = false;
 	for (int i = 1; i < argc; i++)
 	{
@@ -204,7 +206,8 @@ int main(int argc, char *argv[])
 			isBrief = false;
 			isPreviousDetail = true;
 		}
-		else if (isPreviousDetail) {
+		else if (isPreviousDetail)
+		{
 			isPreviousDetail = false;
 			maxSentence = atoi(argv[i]);
 		}
@@ -220,7 +223,8 @@ int main(int argc, char *argv[])
 	sprintf(message, message_fmt, cat_input.c_str());
 
 	string response = httpsRuest(host, message);
-	try {
+	try
+	{
 		response = response.substr(response.find('{'));
 		if (isBrief)
 		{ //brief
@@ -231,11 +235,13 @@ int main(int argc, char *argv[])
 			parseDetail(json::parse(response));
 		}
 	}
-	catch (std::out_of_range) {
+	catch (std::out_of_range)
+	{
 		SetConsoleTextAttribute(hConsole, 15 | backgroundColor);
 		printf("该单词不存在");
 	}
 
+	SetConsoleTextAttribute(hConsole, foregroundColor | backgroundColor);
 
 	return 0;
 }
