@@ -1,9 +1,19 @@
+<!-- TOC -->
+
+- [iDict-cmd](#idict-cmd)
+    - [Install](#install)
+    - [Usage](#usage)
+    - [Example](#example)
+    - [Color (Beta in win64_python version)](#color-beta-in-win64python-version)
+    - [Compile on your own](#compile-on-your-own)
+
+<!-- /TOC -->
 # iDict-cmd
 <img src="https://img.shields.io/github/release/AntiSomnus/iDict-cmd.svg"/>
 
 command line version of iDict for macOs&Windows&Linux
 
-适用macOs,Windows(64位)和Linux的命令行版本iDict英语词典,包含330W词库以及来自权威词典的双语例句。
+适用macOs, Windows(64位)和Linux的命令行版本iDict英语词典,包含330W词库以及来自权威词典的双语例句。
 
 轻量级,包含所有依赖的可执行文件,下载即用。
 
@@ -12,7 +22,7 @@ command line version of iDict for macOs&Windows&Linux
 ![macos_detail](/pics/macos_detail.png "macos_detail")
 
 ## Install
-
+请去[Release](https://github.com/AntiSomnus/iDict-cmd/releases/latest)页面下载对应的可执行文件
 - Linux
 
     1. `wget https://github.com/AntiSomnus/iDict-cmd/releases/download/[latest-release-number]/idict_linux && chmod a+x idict_linux`
@@ -68,6 +78,44 @@ idict welcome -d 1
 ![linux_detail](/pics/linux_detail.png "linux_detail")
 
 ![windows_detail](/pics/windows_detail.png "windows_detail")
+
+## Color (Beta in win64_python version)
+修改`color.ini`即可修改颜色
+
+New python version will give you the flexibility to change color configuration.
+
+Just change the `color.ini` in the folder of `win64_python` Release
+
+The color table is below
+```
+BLACK           = 30
+RED             = 31
+GREEN           = 32
+YELLOW          = 33
+BLUE            = 34
+MAGENTA         = 35
+CYAN            = 36
+WHITE           = 37
+RESET           = 39
+
+LIGHTBLACK      = 90
+LIGHTRED        = 91
+LIGHTGREEN      = 92
+LIGHTYELLOW     = 93
+LIGHTBLUE       = 94
+LIGHTMAGENTA    = 95
+LIGHTCYAN       = 96
+LIGHTWHITE      = 97
+```
+
+default color configuration is
+```
+[COLOR]
+word_color = 91
+section_color = 92
+hint_color = 93
+text_color = 97
+```
 
 ## Compile on your own
 - Linux
