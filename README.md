@@ -5,6 +5,7 @@
     - [Usage](#usage)
     - [Example](#example)
     - [Color (Beta in win64_python version)](#color-beta-in-win64python-version)
+    - [Sentences from news (Beta in win64_python version)](#sentences-from-news-beta-in-win64python-version)
     - [Compile on your own](#compile-on-your-own)
 
 <!-- /TOC -->
@@ -115,8 +116,12 @@ word_color = 91
 section_color = 92
 hint_color = 93
 text_color = 97
+source_color = 90
 ```
+## Sentences from news (Beta in win64_python version)
+可以获得来自国外权威新闻媒体对于该单词的用法，在`win64_python`版本中使用`-n`即可开启，如`idict test -n`或`idict test -n -d`
 
+New feature that provides sentences from news by the api of `vocabulary.com`
 ## Compile on your own
 - Linux
     ```

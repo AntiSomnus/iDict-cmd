@@ -3,14 +3,21 @@ import argparse
 import json
 import os
 import configparser
-
+import arrow
 from colorama import init
+
 
 def get_color(color_code):
     return '\x1b[%sm' % color_code
 
 
 def parse_brief(brief):
+    sentences = None
+    if args.news:
+        sentences = json.loads(
+            requests.get("https://corpus.vocabulary.com/api/1.0/examples.json?maxResults=5&query=" + args.word).text)[
+            'result']['sentences']
+
     word = WORD_COLOR + brief['wordOut'] + ": "
     if 'relation' in brief['lemma']:
         word += TEXT_COLOR + (
@@ -39,6 +46,13 @@ def parse_brief(brief):
                     'meaning'])
             else:
                 print("    " + "".ljust(8) + TEXT_COLOR + eng_def['meaning'])
+    if sentences:
+        print(SECTION_COLOR + "新闻例句")
+        for i, sentence in enumerate(sentences):
+            print(TEXT_COLOR,
+                  "".ljust(4) + (str(i + 1) + ".").ljust(3) + sentence['sentence'])
+            print(SOURCE_COLOR, "".ljust(7) + sentence['volume']['corpus']['name'] + "".ljust(4) +
+                  arrow.get(sentence['volume']['dateAdded']).format("MMM DD, YYYY"))
 
 
 def parse_source(sentence_group):
@@ -71,7 +85,9 @@ parser.add_argument('word', type=str, help="The word you want to query")
 parser.add_argument('--detail', '-d', action='store', default=0, const=2, nargs='?', type=int, dest='detail',
                     help="Show the detailed meaning of the word")
 parser.add_argument('--brief', '-b', action='store_true', default=True, help="Show the brief meaning of the word", )
-'\x1b[31m'
+parser.add_argument('--news', '-n', action='store_true', default=False,
+                    help="Whether show sentence examples from news")
+
 args = parser.parse_args()
 
 config_path = os.path.join(os.path.split(os.path.realpath(__file__))[0], "color.ini")
@@ -81,9 +97,14 @@ WORD_COLOR = get_color(config.getint('COLOR', 'word_color') if config.getint('CO
 HINT_COLOR = get_color(config.getint('COLOR', 'hint_color') if config.getint('COLOR', 'hint_color') else 92)
 SECTION_COLOR = get_color(config.getint('COLOR', 'section_color') if config.getint('COLOR', 'section_color') else 93)
 TEXT_COLOR = get_color(config.getint('COLOR', 'text_color') if config.getint('COLOR', 'text_color') else 97)
+SOURCE_COLOR = get_color(config.getint('COLOR', 'source_color') if config.getint('COLOR', 'source_color') else 90)
+
 detail = json.loads(requests.get("https://ireading.site/word/detail?json=true&word=" + args.word).text)
 default_sent = args.detail
-if args.detail:
-    parse_detail(detail)
-else:
-    parse_brief(detail['wordBrief'])
+try:
+    if args.detail:
+        parse_detail(detail)
+    else:
+        parse_brief(detail['wordBrief'])
+except:
+    print("该单词不存在")
