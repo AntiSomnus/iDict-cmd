@@ -1,3 +1,5 @@
+import sys
+
 import requests
 import argparse
 import json
@@ -89,8 +91,13 @@ parser.add_argument('--news', '-n', action='store_true', default=False,
                     help="Whether show sentence examples from news")
 
 args = parser.parse_args()
-
-config_path = os.path.join(os.path.split(os.path.realpath(__file__))[0], "color.ini")
+if getattr(sys, 'frozen', False):
+    # we are running in a bundle
+    bundle_dir = sys._MEIPASS
+else:
+    # we are running in a normal Python environment
+    bundle_dir = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(bundle_dir, "color.ini")
 config = configparser.ConfigParser()
 config.read(config_path)
 WORD_COLOR = get_color(config.getint('COLOR', 'word_color') if config.getint('COLOR', 'word_color') else 91)
