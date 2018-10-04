@@ -93,7 +93,7 @@ parser.add_argument('--news', '-n', action='store_true', default=False,
 args = parser.parse_args()
 if getattr(sys, 'frozen', False):
     # we are running in a bundle
-    bundle_dir = sys._MEIPASS
+    bundle_dir = os.path.split(sys.executable)[0]
 else:
     # we are running in a normal Python environment
     bundle_dir = os.path.dirname(os.path.abspath(__file__))
